@@ -1,32 +1,27 @@
-# Project Management — Requirements
+# Proje Yönetimi — Gereksinimler
 
-## Document Information
-
-| Field | Value |
+| Alan | Değer |
 |---|---|
-| Product | Knitwise |
+| Ürün | Knitwise |
 | Feature ID | FEATURE-001 |
-| Feature Name | Project Management |
-| Requirement Prefix | PM |
-| Priority | P0 |
-| Planned Release | V1 |
-| Document Status | Draft |
-| Version | 1.0 |
-| Last Updated | 2026-07-29 |
-| Product Owner | Product |
-| Technical Owner | TBD |
+| Feature Adı | Project Management |
+| Dosya | `03-features/feature-001-project-management/requirements.md` |
+| Öncelik | P0 |
+| Planlanan Sürüm | V1 |
+| Doküman Durumu | Draft |
+| Versiyon | 1.0 |
+| Dil | Türkçe |
+| Teknik Sabitler | İngilizce korunur |
 
 ---
 
-# 1. Purpose
+## 1. Amaç
 
-This document defines the functional requirements, non-functional requirements, business rules, validation rules, error-handling requirements, edge cases, and acceptance criteria for the Knitwise Project Management feature.
+Bu doküman, Knitwise uygulamasındaki **Project Management** özelliğinin ürün gereksinimlerini tanımlar.
 
-Project Management is the central domain of Knitwise.
+Project Management, kullanıcının örgü, tığ işi, amigurumi veya benzer el işi projelerini oluşturmasını, takip etmesini, düzenlemesini, duraklatmasını, tamamlamasını, arşivlemesini ve gerektiğinde silmesini sağlayan temel modüldür.
 
-A project represents a knitting, crochet, amigurumi, or related craft activity that a user wants to create, track, pause, complete, archive, or delete.
-
-Other Knitwise features may attach their data to a project, including:
+Bu özellik Knitwise içindeki birçok modülün merkezinde yer alır:
 
 - Row Counter
 - Multi-Part Tracking
@@ -34,455 +29,107 @@ Other Knitwise features may attach their data to a project, including:
 - Custom Patterns
 - Starter Patterns
 - Yarn Inventory
-- Hook and Needle Inventory
-- Material Recommendations
-- Notifications
-- Statistics
+- Hook / Needle Inventory
 - Local Persistence
 - Cloud Sync
+- Premium Entitlement
+- Statistics
+- Notifications
 
-This document is the primary product-level source of truth for Project Management behavior.
-
-Technical implementation details must be documented separately in:
-
-- `implementation-notes.md`
+Bu dosya Codex veya geliştirici ekip tarafından doğrudan referans alınabilecek seviyede hazırlanmıştır.
 
 ---
 
-# 2. Requirement Conventions
+## 2. Kapsam
 
-## 2.1 Requirement Types
+### 2.1 V1 Kapsamına Dahil Olanlar
 
-| Prefix | Meaning |
+V1 kapsamında Project Management özelliği şunları desteklemelidir:
+
+- Yeni proje oluşturma
+- Hızlı proje oluşturma
+- Detaylı proje oluşturma
+- Proje listesini görüntüleme
+- Proje detayını görüntüleme
+- Proje bilgilerini düzenleme
+- Proje durumunu değiştirme
+- Projeyi aktif, duraklatılmış, tamamlanmış ve arşivlenmiş olarak yönetme
+- Projeyi soft delete yöntemiyle silme
+- Silinen projeyi kurtarma altyapısını destekleme
+- Proje arama
+- Proje filtreleme
+- Proje sıralama
+- Proje notları ekleme
+- Proje kapak görseli ekleme
+- Projeye pattern bağlama
+- Projeye yarn bağlama
+- Projeye hook veya needle bağlama
+- Projeden row counter açma
+- Projeden part tracking açma
+- Proje ilerlemesini görüntüleme
+- Offline proje oluşturma
+- Offline proje düzenleme
+- Free plan aktif proje limiti uygulama
+- Premium downgrade sonrası mevcut projeleri koruma
+
+### 2.2 V1 Kapsamı Dışında Olanlar
+
+Aşağıdaki özellikler V1 kapsamına dahil değildir:
+
+- Çok kullanıcılı proje ortaklığı
+- Public project profile
+- Sosyal paylaşım
+- Like, comment, follow gibi sosyal etkileşimler
+- Marketplace
+- Sipariş yönetimi
+- Maliyet ve kar hesabı
+- AI ile otomatik proje oluşturma
+- AI ile proje ilerleme özeti
+- Gerçek zamanlı ortak düzenleme
+- Web dashboard
+- Public proje linki
+
+---
+
+## 3. Terimler ve Teknik Sabitler
+
+| Terim | Açıklama |
 |---|---|
-| PM-FR | Functional Requirement |
-| PM-NFR | Non-Functional Requirement |
-| PM-BR | Business Rule |
-| PM-VR | Validation Rule |
-| PM-ER | Error Handling Requirement |
-| PM-EC | Edge Case |
-| PM-AC | Acceptance Criterion |
+| Project | Kullanıcının takip ettiği örgü veya el işi projesi |
+| Active Project | Kullanıcının aktif olarak devam ettiği proje |
+| Paused Project | Kullanıcının geçici olarak duraklattığı proje |
+| Completed Project | Kullanıcının tamamladığı proje |
+| Archived Project | Kullanıcının aktif listeden kaldırdığı ancak sakladığı proje |
+| Soft Delete | Verinin hemen kalıcı silinmeyip `deletedAt` ile işaretlenmesi |
+| Pattern | Kullanıcının takip ettiği tarif veya model |
+| Yarn | Projede kullanılan ip |
+| Tool | Hook, needle veya benzeri yardımcı araç |
+| Row Counter | Satır veya tur takibi yapan sayaç |
+| Part | Kol, gövde, kulak, bacak gibi proje parçası |
 
-## 2.2 Requirement Priority
+Teknik sabitler İngilizce kalmalıdır:
 
-| Priority | Meaning |
-|---|---|
-| Must | Required for V1 release |
-| Should | Important but may be deferred if release risk requires it |
-| Could | Optional improvement |
-| Won’t | Explicitly excluded from the current release |
-
-## 2.3 Requirement Status
-
-| Status | Meaning |
-|---|---|
-| Draft | Requirement is still being refined |
-| Proposed | Requirement is ready for review |
-| Approved | Requirement is approved for implementation |
-| Implemented | Requirement is implemented |
-| Verified | Requirement passed testing |
-| Deferred | Requirement moved to a later release |
-| Rejected | Requirement will not be implemented |
-
----
-
-# 3. Scope Summary
-
-## 3.1 Included in V1
-
-The V1 Project Management feature includes:
-
-- Creating a project
-- Viewing a project list
-- Viewing project details
-- Editing a project
-- Changing project status
-- Pausing and resuming a project
-- Completing a project
-- Reopening a completed project
-- Archiving a project
-- Restoring an archived project
-- Soft deleting a project
-- Recovering a recently deleted project
-- Searching projects
-- Filtering projects
-- Sorting projects
-- Adding project notes
-- Adding a project cover image
-- Linking a pattern
-- Linking yarn
-- Linking hooks or needles
-- Accessing counters from a project
-- Accessing project parts
-- Displaying project progress
-- Supporting offline creation
-- Supporting offline editing
-- Applying free-plan active-project limits
-- Preserving existing projects after subscription downgrade
-
-## 3.2 Excluded from V1
-
-The following capabilities are excluded from V1:
-
-- Multi-user project collaboration
-- Public project profiles
-- Project comments
-- Likes or social interactions
-- Customer order management
-- Product sales
-- Cost and profit calculation
-- Public project-sharing links
-- Project marketplace
-- Real-time collaborative editing
-- Advanced project templates
-- AI-generated project plans
-- AI-generated progress summaries
-- Desktop web project management
-- Public community feeds
+```text
+draft
+active
+paused
+completed
+archived
+projectId
+ownerId
+createdAt
+updatedAt
+deletedAt
+archivedAt
+completedAt
+syncStatus
+```
 
 ---
 
-# 4. Project Entity Definition
+## 4. Proje Yaşam Döngüsü
 
-A project is a user-owned record representing a knitting, crochet, amigurumi, or related craft activity.
-
-Every project must contain:
-
-- A unique identifier
-- An owner identifier
-- A project name
-- A project status
-- A creation timestamp
-- A last-updated timestamp
-
-All other project fields are optional unless another business rule explicitly makes them required.
-
----
-
-# 5. Functional Requirements
-
-## 5.1 Project Creation
-
-### PM-FR-001 — Create Project
-
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall allow an authenticated or locally authorized user to create a project.
-
-The project creation flow shall support at minimum:
-
-- Project name
-- Initial project status
-
-The system shall automatically assign:
-
-- Project ID
-- Owner ID
-- Created timestamp
-- Updated timestamp
-
-### PM-FR-002 — Quick Project Creation
-
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall allow a user to create a project by entering only a project name.
-
-Optional fields shall not block project creation.
-
-The quick-create flow shall allow a user to start working on a project with minimal interaction.
-
-### PM-FR-003 — Detailed Project Creation
-
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall provide an optional detailed project creation flow.
-
-The detailed flow may include:
-
-- Project name
-- Technique
-- Category
-- Description
-- Cover image
-- Start date
-- Target completion date
-- Pattern
-- Yarn
-- Hook or needle
-- Initial project status
-
-### PM-FR-004 — Generate Unique Project ID
-
-**Priority:** Must  
-**Status:** Proposed
-
-Every project shall receive a globally unique identifier.
-
-The identifier shall not depend on:
-
-- Project name
-- Project category
-- Project creation order
-- User-visible sequence numbers
-
-The identifier must remain unchanged throughout the project lifecycle.
-
-### PM-FR-005 — Save Project Locally First
-
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall persist the core project record locally before treating project creation as successful.
-
-Remote synchronization shall not be required for the user to begin using the project.
-
-### PM-FR-006 — Draft Project Support
-
-**Priority:** Should  
-**Status:** Proposed
-
-The system shall support saving an incomplete project as a draft.
-
-A draft project may contain only:
-
-- Project ID
-- Owner ID
-- Project name or temporary recovery name
-- Status
-- Timestamps
-
-Draft behavior shall prevent project data from being lost when the application closes unexpectedly.
-
-### PM-FR-007 — Recover Incomplete Creation
-
-**Priority:** Must  
-**Status:** Proposed
-
-When the project creation form contains unsaved changes, the system shall preserve a recoverable local draft where technically possible.
-
-When the user returns, the system may offer:
-
-- Continue editing
-- Discard draft
-- Save as draft
-
----
-
-## 5.2 Project List
-
-### PM-FR-008 — Display Project List
-
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall display projects owned by the current user.
-
-The default project list shall include:
-
-- Active projects
-- Paused projects
-
-Draft, completed, archived, and deleted projects shall not appear in the default list unless explicitly selected.
-
-### PM-FR-009 — Project Card Information
-
-**Priority:** Must  
-**Status:** Proposed
-
-Each project card shall display at minimum:
-
-- Project name
-- Project status
-- Cover image or placeholder
-- Last-updated information
-
-When available, the card may also display:
-
-- Technique
-- Category
-- Progress
-- Pattern name
-- Active counter summary
-
-### PM-FR-010 — Project List Categories
-
-**Priority:** Must  
-**Status:** Proposed
-
-The project list shall support the following views:
-
-- Active
-- Paused
-- Draft
-- Completed
-- Archived
-- All non-deleted projects
-
-Deleted projects shall not appear in normal project-list views.
-
-### PM-FR-011 — Empty Project State
-
-**Priority:** Must  
-**Status:** Proposed
-
-When the user has no projects, the system shall display an empty state containing:
-
-- A brief explanation
-- A primary create-project action
-- An optional starter-project suggestion
-- No mandatory Premium prompt
-
-### PM-FR-012 — List Refresh
-
-**Priority:** Must  
-**Status:** Proposed
-
-The project list shall refresh when:
-
-- A project is created
-- A project is updated
-- A project status changes
-- A project is archived
-- A project is restored
-- A project is deleted
-- Synchronization introduces remote changes
-
-The user shall not be required to restart the application to see project changes.
-
----
-
-## 5.3 Project Detail
-
-### PM-FR-013 — Display Project Detail
-
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall provide a project-detail view.
-
-The project-detail view shall display available project information, including:
-
-- Project name
-- Project status
-- Description
-- Technique
-- Category
-- Start date
-- Target completion date
-- Completion date
-- Cover image
-- Progress
-- Linked pattern
-- Linked yarn
-- Linked tools
-- Counters
-- Parts
-
-Missing optional information shall not prevent the project-detail view from opening.
-
-### PM-FR-014 — Access Related Features
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to access project-related features from the project-detail context.
-
-Related feature entry points may include:
-
-- Open pattern
-- Open row counter
-- Open multi-part tracking
-- Open yarn assignments
-- Open hook or needle assignments
-- Open notes
-- Open progress information
-
-### PM-FR-015 — Project Ownership Check
-
-**Priority:** Must  
-**Status:** Proposed
-
-Before displaying project data, the system shall confirm that the current user owns or is authorized to access the project.
-
-Unauthorized project data shall not be displayed.
-
----
-
-## 5.4 Project Editing
-
-### PM-FR-016 — Edit Project
-
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall allow the project owner to edit supported project fields.
-
-Editable fields may include:
-
-- Project name
-- Description
-- Technique
-- Category
-- Cover image
-- Start date
-- Target completion date
-- Completion date
-- Pattern assignment
-- Material assignments
-- Tool assignments
-- Manual progress
-
-### PM-FR-017 — Save Project Changes
-
-**Priority:** Must  
-**Status:** Proposed
-
-Valid project changes shall be persisted locally.
-
-The `updatedAt` value shall change whenever a meaningful project field is modified.
-
-Opening a project without changing data shall not update `updatedAt`.
-
-### PM-FR-018 — Cancel Project Editing
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to cancel project editing.
-
-When changes have not been automatically saved, the system shall either:
-
-- Discard changes after confirmation, or
-- Preserve changes as a local draft
-
-The selected behavior must be consistent across project forms.
-
-### PM-FR-019 — Auto-Save Project Notes
-
-**Priority:** Should  
-**Status:** Proposed
-
-Project notes should support automatic local saving.
-
-The user shall receive a visible indication when:
-
-- Changes are being saved
-- Changes are saved
-- Saving fails
-
----
-
-## 5.5 Project Status Management
-
-### PM-FR-020 — Supported Project Statuses
-
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall support the following project statuses:
+Bir proje aşağıdaki durumlara sahip olabilir:
 
 ```text
 draft
@@ -492,1015 +139,683 @@ completed
 archived
 ```
 
-Deleted state shall be represented separately through soft-delete fields and shall not be treated as a normal project status.
+Silinme durumu normal bir status değildir. Silinme işlemi `deletedAt` alanı ile takip edilir.
 
-### PM-FR-021 — Change Project Status
+### 4.1 Durum Geçişleri
 
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to change project status when the requested transition is permitted by business rules.
-
-The system shall reject:
-
-- Unsupported status values
-- Invalid status transitions
-- Unauthorized status changes
-
-### PM-FR-022 — Pause Project
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to change an active project to paused.
-
-Pausing a project shall preserve:
-
-- Counters
-- Parts
-- Notes
-- Pattern assignment
-- Material assignments
-- Tool assignments
-- Progress information
-
-Pausing shall not create a completion date.
-
-### PM-FR-023 — Resume Project
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to change a paused project to active.
-
-The project shall continue from its existing progress state.
-
-### PM-FR-024 — Complete Project
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to mark a project as completed.
-
-When completed:
-
-- Status shall become `completed`
-- Completion date shall be populated
-- The project shall leave the default active-project list
-- Project data shall remain accessible
-- Project data shall remain editable unless another approved rule restricts it
-
-### PM-FR-025 — Reopen Completed Project
-
-**Priority:** Should  
-**Status:** Proposed
-
-The user shall be able to reopen a completed project.
-
-Reopening shall:
-
-- Change the status to `active` or another eligible working status
-- Preserve all project data
-- Apply active-project entitlement limits
-- Re-evaluate completion-date behavior
-
-### PM-FR-026 — Archive Project
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to archive a project without deleting it.
-
-Archiving shall:
-
-- Change project status to `archived`
-- Record an archive timestamp
-- Remove the project from default lists
-- Preserve project-related data
-
-### PM-FR-027 — Restore Archived Project
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to restore an archived project.
-
-The restoration flow shall either:
-
-- Restore the previous working status, or
-- Ask the user to choose an eligible destination status
-
-Restoring to active status shall respect active-project limits.
+| Mevcut Durum | Hedef Durum | İzin |
+|---|---|---|
+| `draft` | `active` | Evet |
+| `active` | `paused` | Evet |
+| `paused` | `active` | Evet |
+| `active` | `completed` | Evet |
+| `paused` | `completed` | Evet |
+| `completed` | `active` | Evet, entitlement kontrolüyle |
+| `active` | `archived` | Evet |
+| `paused` | `archived` | Evet |
+| `completed` | `archived` | Evet |
+| `archived` | `active` | Evet, entitlement kontrolüyle |
+| `archived` | `paused` | Evet |
+| Her durum | Soft delete | Evet, kullanıcı onayıyla |
 
 ---
 
-## 5.6 Project Deletion
+## 5. Fonksiyonel Gereksinimler
 
-### PM-FR-028 — Soft Delete Project
+### PM-FR-001 — Proje Oluşturma
 
-**Priority:** Must  
-**Status:** Proposed
+Sistem, kullanıcının yeni bir proje oluşturmasına izin vermelidir.
 
-Deleting a project shall initially perform a soft delete.
+Minimum proje oluşturma alanları:
 
-The system shall record:
+- Proje adı
+- Başlangıç durumu
 
-- Deleted state
-- Deleted timestamp
-- User responsible for deletion, where applicable
+Sistem aşağıdaki alanları otomatik oluşturmalıdır:
 
-The project shall be excluded from normal queries after deletion.
+- `projectId`
+- `ownerId`
+- `createdAt`
+- `updatedAt`
 
-### PM-FR-029 — Delete Confirmation
+---
 
-**Priority:** Must  
-**Status:** Proposed
+### PM-FR-002 — Hızlı Proje Oluşturma
 
-Before deleting a project, the system shall display a clear confirmation message.
+Kullanıcı yalnızca proje adı girerek proje oluşturabilmelidir.
 
-The confirmation shall distinguish between:
+Opsiyonel alanlar boş bırakıldığında proje oluşturma engellenmemelidir.
 
-- Archive
-- Delete
+Hızlı oluşturma akışı, kullanıcının mümkün olan en kısa sürede projeye başlamasını sağlamalıdır.
 
-The delete action shall not be presented as equivalent to archiving.
+---
 
-### PM-FR-030 — Project Recovery
+### PM-FR-003 — Detaylı Proje Oluşturma
 
-**Priority:** Should  
-**Status:** Proposed
+Sistem, isteğe bağlı detaylı proje oluşturma akışı sunmalıdır.
 
-The system should support project recovery during a defined recovery period.
+Detaylı form aşağıdaki alanları destekleyebilir:
 
-Recommended V1 recovery period:
+- Proje adı
+- Açıklama
+- Teknik
+- Kategori
+- Kapak görseli
+- Başlangıç tarihi
+- Hedef bitiş tarihi
+- Pattern seçimi
+- Yarn seçimi
+- Hook / Needle seçimi
+- İlk status
+
+---
+
+### PM-FR-004 — Benzersiz Proje Kimliği
+
+Her proje global olarak benzersiz bir `projectId` almalıdır.
+
+`projectId` şu bilgilere bağlı olmamalıdır:
+
+- Proje adı
+- Proje sırası
+- Kategori
+- Kullanıcı tarafından görülen numara
+
+`projectId` proje yaşam döngüsü boyunca değişmemelidir.
+
+---
+
+### PM-FR-005 — Lokal Öncelikli Kayıt
+
+Proje oluşturma işleminde sistem, önce lokal kayıt yapmalıdır.
+
+Remote sync başarısız olsa bile, lokal kayıt başarılıysa kullanıcı projeyi görmeye ve kullanmaya devam edebilmelidir.
+
+---
+
+### PM-FR-006 — Draft Proje Desteği
+
+Sistem, tamamlanmamış proje oluşturma formlarını draft olarak saklayabilmelidir.
+
+Draft proje minimum şu alanlara sahip olabilir:
+
+- `projectId`
+- `ownerId`
+- `status = draft`
+- `createdAt`
+- `updatedAt`
+
+Draft proje, kullanıcının yarım kalan form verisini kaybetmesini önlemek için kullanılmalıdır.
+
+---
+
+### PM-FR-007 — Proje Listesi Görüntüleme
+
+Sistem, kullanıcının kendisine ait projeleri listelemelidir.
+
+Varsayılan liste şunları göstermelidir:
+
+- `active`
+- `paused`
+
+Varsayılan listede şu durumlar gösterilmemelidir:
+
+- `draft`
+- `completed`
+- `archived`
+- `deleted`
+
+Bu durumlar ayrı filtre veya görünüm üzerinden erişilebilir olmalıdır.
+
+---
+
+### PM-FR-008 — Proje Kartı
+
+Her proje kartı minimum şu bilgileri göstermelidir:
+
+- Proje adı
+- Proje durumu
+- Kapak görseli veya placeholder
+- Son güncellenme bilgisi
+
+Varsa şu bilgiler de gösterilebilir:
+
+- Teknik
+- Kategori
+- Pattern adı
+- İlerleme özeti
+- Aktif counter bilgisi
+
+---
+
+### PM-FR-009 — Boş Liste Durumu
+
+Kullanıcının hiç projesi yoksa sistem boş durum ekranı göstermelidir.
+
+Boş durum ekranında şunlar bulunmalıdır:
+
+- Kısa açıklama
+- Proje oluşturma butonu
+- İsteğe bağlı başlangıç önerisi
+
+Premium satış mesajı zorunlu olmamalıdır.
+
+---
+
+### PM-FR-010 — Proje Detayı Görüntüleme
+
+Sistem, kullanıcının proje detay ekranını açmasına izin vermelidir.
+
+Proje detay ekranında uygun olan bilgiler gösterilmelidir:
+
+- Proje adı
+- Status
+- Açıklama
+- Teknik
+- Kategori
+- Başlangıç tarihi
+- Hedef bitiş tarihi
+- Tamamlanma tarihi
+- Kapak görseli
+- Pattern ilişkisi
+- Yarn ilişkileri
+- Tool ilişkileri
+- Row counter özeti
+- Part özeti
+- İlerleme bilgisi
+- Notlar
+
+Opsiyonel alanların boş olması ekranın açılmasını engellememelidir.
+
+---
+
+### PM-FR-011 — Proje Sahipliği Kontrolü
+
+Sistem, proje detayını göstermeden önce projenin mevcut kullanıcıya ait olduğunu doğrulamalıdır.
+
+Kullanıcı başka bir kullanıcının projesini:
+
+- URL değiştirerek
+- Local route değiştirerek
+- API isteği manipüle ederek
+- Deep link üzerinden
+
+görememelidir.
+
+---
+
+### PM-FR-012 — Proje Düzenleme
+
+Kullanıcı sahibi olduğu projeyi düzenleyebilmelidir.
+
+Düzenlenebilir alanlar:
+
+- Proje adı
+- Açıklama
+- Teknik
+- Kategori
+- Kapak görseli
+- Başlangıç tarihi
+- Hedef bitiş tarihi
+- Tamamlanma tarihi
+- Pattern ilişkisi
+- Yarn ilişkileri
+- Tool ilişkileri
+- Manuel ilerleme
+- Notlar
+
+---
+
+### PM-FR-013 — Güncelleme Zamanı
+
+Anlamlı bir proje alanı değiştiğinde `updatedAt` güncellenmelidir.
+
+Sadece ekranı açmak, okumak veya görüntülemek `updatedAt` değerini değiştirmemelidir.
+
+---
+
+### PM-FR-014 — Proje Status Değiştirme
+
+Kullanıcı, iş kurallarına uygun şekilde proje status değerini değiştirebilmelidir.
+
+Desteklenen status değerleri:
 
 ```text
-30 days
+draft
+active
+paused
+completed
+archived
 ```
 
-The final duration shall be approved before production release.
-
-### PM-FR-031 — Permanent Deletion
-
-**Priority:** Should  
-**Status:** Proposed
-
-After the recovery period, the system may permanently remove:
-
-- Project record
-- Project-specific relationship records
-- Project media
-- Project-only drafts
-- Project-specific synchronization records
-
-Permanent deletion shall respect:
-
-- Legal requirements
-- Data-retention requirements
-- Backup-retention rules
-- Account-deletion requirements
+Geçersiz status değerleri kabul edilmemelidir.
 
 ---
 
-## 5.7 Search
+### PM-FR-015 — Projeyi Duraklatma
 
-### PM-FR-032 — Search by Project Name
+Kullanıcı `active` durumdaki projeyi `paused` durumuna alabilmelidir.
 
-**Priority:** Must  
-**Status:** Proposed
+Duraklatma işlemi şu verileri korumalıdır:
 
-The user shall be able to search projects by project name.
+- Counter verileri
+- Part verileri
+- Pattern ilişkisi
+- Yarn ilişkileri
+- Tool ilişkileri
+- Notlar
+- Kapak görseli
+- İlerleme bilgisi
 
-Search shall be:
-
-- Case-insensitive
-- Whitespace-tolerant
-- Compatible with Turkish characters
-- Restricted to projects accessible by the current user
-
-### PM-FR-033 — Search Result State
-
-**Priority:** Must  
-**Status:** Proposed
-
-When no project matches the search query, the system shall display a no-results state.
-
-The no-results state shall not imply that the user has no projects.
-
-### PM-FR-034 — Clear Search
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to clear the search query and return to the unfiltered project list.
+Duraklatma işlemi `completedAt` oluşturmaz.
 
 ---
 
-## 5.8 Filtering
+### PM-FR-016 — Projeyi Devam Ettirme
 
-### PM-FR-035 — Filter Projects
+Kullanıcı `paused` durumdaki projeyi tekrar `active` hale getirebilmelidir.
 
-**Priority:** Should  
-**Status:** Proposed
+Proje kaldığı yerden devam etmelidir.
 
-The system shall allow projects to be filtered by one or more supported criteria.
+---
 
-V1 filters may include:
+### PM-FR-017 — Projeyi Tamamlama
+
+Kullanıcı projeyi tamamlandı olarak işaretleyebilmelidir.
+
+Tamamlama işleminde:
+
+- `status = completed` olmalıdır
+- `completedAt` doldurulmalıdır
+- Proje varsayılan aktif listeden çıkmalıdır
+- Proje detayları erişilebilir kalmalıdır
+- Proje verileri silinmemelidir
+
+---
+
+### PM-FR-018 — Tamamlanan Projeyi Yeniden Açma
+
+Kullanıcı tamamlanmış projeyi yeniden açabilmelidir.
+
+Yeniden açma işleminde:
+
+- Status `active` veya uygun çalışma durumuna alınmalıdır
+- Aktif proje limiti kontrol edilmelidir
+- Proje verileri korunmalıdır
+- `completedAt` davranışı iş kurallarına göre uygulanmalıdır
+
+---
+
+### PM-FR-019 — Projeyi Arşivleme
+
+Kullanıcı projeyi arşivleyebilmelidir.
+
+Arşivleme işleminde:
+
+- `status = archived` olmalıdır
+- `archivedAt` doldurulmalıdır
+- Proje varsayılan listeden kaldırılmalıdır
+- Proje verileri silinmemelidir
+
+---
+
+### PM-FR-020 — Arşivden Geri Alma
+
+Kullanıcı arşivlenmiş projeyi geri alabilmelidir.
+
+Geri alma sırasında sistem:
+
+- Önceki çalışma status değerini geri yükleyebilir
+- Kullanıcıdan hedef status seçmesini isteyebilir
+
+Eğer hedef status `active` ise aktif proje limiti uygulanmalıdır.
+
+---
+
+### PM-FR-021 — Soft Delete
+
+Proje silme işlemi ilk aşamada soft delete olarak yapılmalıdır.
+
+Soft delete işleminde:
+
+- `deletedAt` doldurulmalıdır
+- Proje normal listelerden kaldırılmalıdır
+- Proje kurtarma süresi içinde geri alınabilir olmalıdır
+
+---
+
+### PM-FR-022 — Silme Onayı
+
+Silme işleminden önce kullanıcıya açık onay ekranı gösterilmelidir.
+
+Onay ekranı, arşivleme ile silme arasındaki farkı net şekilde anlatmalıdır.
+
+---
+
+### PM-FR-023 — Proje Arama
+
+Kullanıcı projeleri proje adına göre arayabilmelidir.
+
+Arama:
+
+- Büyük/küçük harf duyarsız olmalıdır
+- Türkçe karakterleri desteklemelidir
+- Boşluk toleranslı olmalıdır
+- Sadece kullanıcının erişebildiği projelerde çalışmalıdır
+
+---
+
+### PM-FR-024 — Proje Filtreleme
+
+Sistem proje filtrelemeyi desteklemelidir.
+
+V1 filtreleri:
 
 - Status
-- Technique
-- Category
-- Has linked pattern
-- Has active counter
-- Recently updated
-
-### PM-FR-036 — Display Active Filters
-
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall visually indicate when filters are active.
-
-The user shall be able to remove:
-
-- A single filter
-- All active filters
-
-### PM-FR-037 — Empty Filter Result
-
-**Priority:** Must  
-**Status:** Proposed
-
-When selected filters return no results, the system shall display an appropriate empty-result state.
-
-The system shall provide an action to clear filters.
+- Teknik
+- Kategori
+- Pattern bağlı mı?
+- Counter var mı?
+- Yakın zamanda güncellendi mi?
 
 ---
 
-## 5.9 Sorting
+### PM-FR-025 — Proje Sıralama
 
-### PM-FR-038 — Sort Projects
+Sistem proje sıralamayı desteklemelidir.
 
-**Priority:** Should  
-**Status:** Proposed
+Desteklenen sıralamalar:
 
-The system shall support project sorting by:
+- Son güncellenen
+- İlk güncellenen
+- Yeni oluşturulan
+- Eski oluşturulan
+- Ada göre A-Z
+- Ada göre Z-A
 
-- Recently updated
-- Oldest updated
-- Newest created
-- Oldest created
-- Name ascending
-- Name descending
-
-Progress-based sorting may be included if progress-data quality is sufficient.
-
-### PM-FR-039 — Default Sorting
-
-**Priority:** Must  
-**Status:** Proposed
-
-The default project sort order shall be:
+Varsayılan sıralama:
 
 ```text
 updatedAt descending
 ```
 
-The most recently updated project shall appear first.
+---
 
-### PM-FR-040 — Persist Sort Preference
+### PM-FR-026 — Proje Notları
 
-**Priority:** Could  
-**Status:** Proposed
+Kullanıcı projeye serbest metin notu ekleyebilmelidir.
 
-The system may persist the user’s most recently selected project-sorting preference locally.
+Notlar şunlar için kullanılabilir:
+
+- Ölçü bilgileri
+- Pattern değişiklikleri
+- İp değişiklikleri
+- Kişisel hatırlatmalar
+- Teknik notlar
+
+Not içeriği analytics veya log sistemlerine gönderilmemelidir.
 
 ---
 
-## 5.10 Project Notes
+### PM-FR-027 — Kapak Görseli
 
-### PM-FR-041 — Add Project Notes
+Kullanıcı projeye kapak görseli ekleyebilmelidir.
 
-**Priority:** Must  
-**Status:** Proposed
+Kapak görseli:
 
-The user shall be able to add free-text notes to a project.
+- Eklenebilir
+- Değiştirilebilir
+- Kaldırılabilir
 
-Project notes may contain:
-
-- Measurements
-- Pattern adjustments
-- Stitch notes
-- Yarn substitutions
-- Reminders
-- General observations
-
-### PM-FR-042 — Edit Project Notes
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to edit existing project notes.
-
-### PM-FR-043 — Remove Project Notes
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to clear project notes without deleting the project.
-
-### PM-FR-044 — Notes Privacy
-
-**Priority:** Must  
-**Status:** Proposed
-
-Project-note content shall not be sent to analytics systems.
-
-Project-note content shall not be included in debug logs.
+Kapak görseli yoksa standart placeholder gösterilmelidir.
 
 ---
 
-## 5.11 Project Cover Image
+### PM-FR-028 — Pattern Bağlama
 
-### PM-FR-045 — Add Cover Image
+Kullanıcı projeye erişebildiği bir pattern bağlayabilmelidir.
 
-**Priority:** Should  
-**Status:** Proposed
-
-The user shall be able to assign a cover image to a project.
-
-Supported sources may include:
-
-- Photo library
-- Camera
-- Existing project image
-
-### PM-FR-046 — Replace Cover Image
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to replace a project cover image.
-
-Replacing the image shall not remove or modify other project data.
-
-### PM-FR-047 — Remove Cover Image
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to remove the project cover image.
-
-When no cover image is assigned, the system shall display a consistent placeholder.
-
-### PM-FR-048 — Optimize Cover Image
-
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall resize or compress project cover images before remote upload.
-
-The optimization process shall balance:
-
-- Visual quality
-- Storage usage
-- Upload speed
-- Mobile performance
-
-Exact image specifications shall be documented in `implementation-notes.md`.
-
----
-
-## 5.12 Pattern Relationship
-
-### PM-FR-049 — Link Pattern
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to link an accessible pattern to a project.
-
-The linked pattern may originate from:
+Pattern kaynakları:
 
 - Pattern Library
 - Custom Patterns
 - Starter Patterns
 
-### PM-FR-050 — Replace Linked Pattern
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to replace the pattern linked to a project.
-
-Replacing the pattern shall not automatically delete:
-
-- Counters
-- Notes
-- Parts
-- Materials
-- Tools
-
-The user may be warned when related data may no longer match the replacement pattern.
-
-### PM-FR-051 — Unlink Pattern
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to unlink a pattern from a project.
-
-Unlinking shall not delete the pattern record itself.
-
-### PM-FR-052 — Missing Pattern Handling
-
-**Priority:** Must  
-**Status:** Proposed
-
-If a linked pattern becomes unavailable or is deleted:
-
-- The project shall remain accessible
-- The project shall not be deleted
-- The user shall be informed that the pattern is unavailable
-- The user may remove or replace the broken relationship
+Pattern kaldırıldığında pattern kaydı silinmemelidir.
 
 ---
 
-## 5.13 Yarn Relationship
+### PM-FR-029 — Yarn Bağlama
 
-### PM-FR-053 — Link Yarn
+Kullanıcı projeye bir veya birden fazla yarn bağlayabilmelidir.
 
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to link one or more yarn records to a project.
-
-### PM-FR-054 — Yarn Allocation
-
-**Priority:** Should  
-**Status:** Proposed
-
-The user may specify a yarn quantity allocated to a project.
-
-Supported units may include:
-
-- Grams
-- Meters
-- Skeins
-
-Unit behavior shall follow Yarn Inventory requirements.
-
-### PM-FR-055 — Unlink Yarn
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to remove a yarn relationship from a project.
-
-Removing the relationship shall not delete the yarn-inventory record.
-
-### PM-FR-056 — Deleted Yarn Handling
-
-**Priority:** Must  
-**Status:** Proposed
-
-If a linked yarn record becomes unavailable:
-
-- The project shall remain accessible
-- The interface shall not crash
-- The unavailable relationship shall be represented safely
-- The user may replace or remove the relationship
+Yarn ilişkisi kaldırıldığında yarn inventory kaydı silinmemelidir.
 
 ---
 
-## 5.14 Hook and Needle Relationship
+### PM-FR-030 — Hook / Needle Bağlama
 
-### PM-FR-057 — Link Hook or Needle
+Kullanıcı projeye bir veya birden fazla hook veya needle bağlayabilmelidir.
 
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to link one or more hook or needle records to a project.
-
-### PM-FR-058 — Manual Tool Entry
-
-**Priority:** Should  
-**Status:** Proposed
-
-The system may allow the user to enter a temporary tool value without first creating an inventory record.
-
-Examples:
-
-- 3.5 mm crochet hook
-- 4 mm circular needle
-- 80 cm cable
-
-### PM-FR-059 — Unlink Tool
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to unlink a tool from a project without deleting the related tool-inventory record.
+Tool ilişkisi kaldırıldığında tool inventory kaydı silinmemelidir.
 
 ---
 
-## 5.15 Row Counter Relationship
+### PM-FR-031 — Row Counter Açma
 
-### PM-FR-060 — Open Project Counters
+Kullanıcı proje detayından ilgili row counter ekranına geçebilmelidir.
 
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to access row counters associated with a project.
-
-### PM-FR-061 — Create Counter from Project
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to create a row counter from within the project context.
-
-The new counter shall automatically reference the project ID.
-
-### PM-FR-062 — Multiple Counters
-
-**Priority:** Should  
-**Status:** Proposed
-
-The system shall support multiple counters under a single project.
-
-Examples:
-
-- Main body counter
-- Sleeve counter
-- Pattern-repeat counter
-- Increase counter
-- Decrease counter
-
-### PM-FR-063 — Missing Counter Handling
-
-**Priority:** Must  
-**Status:** Proposed
-
-A missing or corrupted counter shall not prevent the project-detail screen from loading.
+Proje içinden oluşturulan counter otomatik olarak ilgili `projectId` ile ilişkilendirilmelidir.
 
 ---
 
-## 5.16 Multi-Part Relationship
+### PM-FR-032 — Multi-Part Açma
 
-### PM-FR-064 — Open Project Parts
+Kullanıcı proje detayından proje parçalarını yönetebilmelidir.
 
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to access parts associated with a project.
-
-### PM-FR-065 — Create Part from Project
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to add a part from within the project context.
-
-The new part shall automatically reference the project ID.
-
-### PM-FR-066 — Display Part Summary
-
-**Priority:** Must  
-**Status:** Proposed
-
-The project-detail view shall display a summary of part completion when project parts exist.
-
-Example:
-
-```text
-4 of 8 parts completed
-```
+Proje içinden oluşturulan part otomatik olarak ilgili `projectId` ile ilişkilendirilmelidir.
 
 ---
 
-## 5.17 Project Progress
+### PM-FR-033 — Proje İlerlemesi
 
-### PM-FR-067 — Display Progress
+Sistem proje ilerlemesini uygun kaynak varsa göstermelidir.
 
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall display project progress when a valid progress source exists.
-
-### PM-FR-068 — Progress Source Priority
-
-**Priority:** Must  
-**Status:** Proposed
-
-When multiple progress sources exist, the system shall apply the following priority:
+İlerleme kaynağı önceliği:
 
 1. Multi-part completion
-2. Target-based row-counter progress
+2. Target-based row counter progress
 3. Manual progress
-4. No progress displayed
+4. No progress
 
-The application shall not silently average unrelated progress sources.
+Sistem farklı ilerleme kaynaklarını izinsiz şekilde ortalamamalıdır.
 
-### PM-FR-069 — Explain Progress Source
+---
 
-**Priority:** Should  
-**Status:** Proposed
+### PM-FR-034 — Offline Proje Oluşturma
 
-The interface should make the selected progress source understandable.
+Kullanıcı internet bağlantısı yokken proje oluşturabilmelidir.
 
-Examples:
+Proje lokal olarak kaydedilmeli ve sync bekleyen kayıt olarak işaretlenmelidir.
 
-```text
-6 of 10 parts completed
-```
+---
 
-```text
-Row 42 of 100
-```
+### PM-FR-035 — Offline Proje Düzenleme
 
-```text
-Manual progress: 55%
-```
+Kullanıcı lokal olarak mevcut projeleri internet olmadan düzenleyebilmelidir.
 
-### PM-FR-070 — No Progress State
+Remote sync daha sonra yapılmalıdır.
 
-**Priority:** Must  
-**Status:** Proposed
+---
 
-When no valid progress source exists, the system shall not display a fabricated percentage.
+### PM-FR-036 — Sync Durumu
 
-The interface may display:
+Proje değişiklikleri için sync durumu tutulmalıdır.
+
+Örnek değerler:
 
 ```text
-Progress not set
+synced
+pending
+failed
+conflict
 ```
 
 ---
 
-## 5.18 Offline Operation
+### PM-FR-037 — Free Plan Aktif Proje Limiti
 
-### PM-FR-071 — Offline Project Creation
+Free plan için aktif proje limiti uygulanmalıdır.
 
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to create a project without an active internet connection.
-
-The project shall be stored locally.
-
-### PM-FR-072 — Offline Project Editing
-
-**Priority:** Must  
-**Status:** Proposed
-
-The user shall be able to edit locally available projects without an active internet connection.
-
-### PM-FR-073 — Pending Sync State
-
-**Priority:** Must  
-**Status:** Proposed
-
-Changes waiting for remote synchronization shall be marked with a pending-sync state.
-
-The pending state may be shown to the user when relevant.
-
-### PM-FR-074 — Retry Sync
-
-**Priority:** Must  
-**Status:** Proposed
-
-The system shall retry eligible project-synchronization operations when connectivity returns.
-
-Retry behavior shall prevent uncontrolled duplicate operations.
-
-### PM-FR-075 — Preserve Local Changes
-
-**Priority:** Must  
-**Status:** Proposed
-
-A remote-synchronization failure shall not silently remove valid local project changes.
-
----
-
-## 5.19 Premium and Entitlement
-
-### PM-FR-076 — Free Active-Project Limit
-
-**Priority:** Must  
-**Status:** Proposed
-
-The free plan shall support a configurable maximum number of active projects.
-
-Recommended initial V1 decision:
+Önerilen V1 limiti:
 
 ```text
-Free active-project limit: 3
+3 active projects
 ```
 
-The final value shall be consistent with `premium-strategy.md`.
-
-The value should be remotely configurable where technically possible.
-
-### PM-FR-077 — Active-Project Count
-
-**Priority:** Must  
-**Status:** Proposed
-
-For entitlement purposes, active-project count shall include projects with the following statuses:
-
-- `active`
-- `paused`
-
-Recommended V1 draft rule:
+Aktif proje sayımına dahil olan status değerleri:
 
 ```text
-Draft projects do not count until activated.
+active
+paused
 ```
 
-Completed and archived projects shall not count toward the active-project limit.
+Dahil olmayanlar:
 
-### PM-FR-078 — Limit-Reached Experience
-
-**Priority:** Must  
-**Status:** Proposed
-
-When the free active-project limit is reached, the user shall be offered:
-
-- Archive an existing project
-- Complete an existing project
-- Upgrade to Premium
-- Cancel project creation
-
-The system shall not delete existing projects.
-
-### PM-FR-079 — Downgrade Behavior
-
-**Priority:** Must  
-**Status:** Proposed
-
-When a Premium user downgrades and has more projects than the free-plan limit:
-
-- Existing projects shall remain accessible
-- Existing projects shall not be deleted
-- Existing projects shall not be hidden
-- New project creation or activation may be restricted
-- The user shall receive a clear explanation
-
-### PM-FR-080 — Entitlement Failure
-
-**Priority:** Must  
-**Status:** Proposed
-
-When entitlement cannot be verified because of a temporary error, the system shall avoid destructive or irreversible restrictions.
-
-A cached entitlement may be used according to Premium feature rules.
+```text
+draft
+completed
+archived
+deleted
+```
 
 ---
 
-# 6. Non-Functional Requirements
+### PM-FR-038 — Limit Doldu Deneyimi
 
-## 6.1 Performance
+Free kullanıcı aktif proje limitine ulaştığında sistem şu seçenekleri sunmalıdır:
 
-### PM-NFR-001 — Project List Load Time
+- Mevcut projeyi arşivle
+- Mevcut projeyi tamamla
+- Premium'a yükselt
+- İşlemi iptal et
 
-The project list should become usable within two seconds under typical local-data conditions.
-
-Typical conditions include:
-
-- Up to 100 projects
-- Up to 20 active projects
-- Locally cached thumbnails
-- Standard supported mobile hardware
-
-### PM-NFR-002 — Project Detail Load Time
-
-The project-detail view should display core project information within one second when data is locally available.
-
-Related modules may load progressively.
-
-### PM-NFR-003 — Save Responsiveness
-
-A local project save should complete quickly enough that the application does not appear frozen.
-
-Long-running remote operations shall not block local project use.
-
-### PM-NFR-004 — Image Performance
-
-Project thumbnails shall be loaded lazily.
-
-Full-resolution images shall not be loaded into project-list cards.
+Sistem hiçbir mevcut projeyi otomatik silmemelidir.
 
 ---
 
-## 6.2 Reliability
+### PM-FR-039 — Premium Downgrade
 
-### PM-NFR-005 — No Silent Data Loss
+Premium kullanıcı Free plana döndüğünde ve limitten fazla aktif projesi varsa:
 
-The system shall not silently discard valid project changes.
-
-When saving fails, the user shall receive a visible warning or recoverable state.
-
-### PM-NFR-006 — Atomic Core Save
-
-Core project creation shall be atomic.
-
-The system shall avoid states where a project appears created but lacks mandatory identity fields.
-
-### PM-NFR-007 — Partial Relationship Failure
-
-Failure to save an optional relationship shall not automatically delete the core project.
-
-Examples:
-
-- Pattern link fails
-- Yarn link fails
-- Cover-image upload fails
-- Tool link fails
-
-The user shall be informed of the partial failure.
-
-### PM-NFR-008 — Crash Recovery
-
-Recoverable project-form data should survive:
-
-- Application backgrounding
-- Unexpected application termination
-- Device interruption
-- Temporary operating-system resource pressure
+- Mevcut projeler görünür kalmalıdır
+- Mevcut projeler erişilebilir kalmalıdır
+- Hiçbir proje silinmemelidir
+- Yeni aktif proje oluşturma kısıtlanabilir
+- Kullanıcıya açıklama gösterilmelidir
 
 ---
 
-## 6.3 Scalability
+### PM-FR-040 — Eksik İlişki Güvenliği
 
-### PM-NFR-009 — Project Volume
+Pattern, yarn, tool, counter veya part ilişkisi bozulsa bile proje detay ekranı açılmalıdır.
 
-The local project model shall support at least 1,000 project records per user without requiring a schema redesign.
-
-The interface may use:
-
-- Pagination
-- Lazy loading
-- Local indexing
-- Incremental data retrieval
-
-### PM-NFR-010 — Relationship Volume
-
-The project data model shall support multiple:
-
-- Yarn relationships
-- Tool relationships
-- Counters
-- Parts
-- Photos
-
-Related data shall not all be embedded directly into one unbounded project record.
+Eksik ilişki güvenli şekilde gösterilmeli ve kullanıcıya kaldırma/değiştirme seçeneği sunulmalıdır.
 
 ---
 
-## 6.4 Security
+## 6. Fonksiyonel Olmayan Gereksinimler
 
-### PM-NFR-011 — User Isolation
+### PM-NFR-001 — Performans
 
-Project data shall be scoped to the project owner.
+Proje listesi lokal veri mevcutken tipik cihazlarda 2 saniye içinde kullanılabilir hale gelmelidir.
 
-A user shall not be able to access another user’s project by changing:
+### PM-NFR-002 — Detay Ekranı Performansı
 
-- Project ID
-- API request
-- Local route
-- Query parameter
-- Deep link
+Proje detay ekranı temel proje bilgilerini lokal veriyle 1 saniye içinde göstermelidir.
 
-### PM-NFR-012 — Private Media
+İlişkili modüller kademeli yüklenebilir.
 
-Project media shall be stored in private storage.
+### PM-NFR-003 — Veri Kaybı Önleme
 
-Access shall require valid authorization or time-limited access.
+Sistem geçerli kullanıcı değişikliklerini sessizce kaybetmemelidir.
 
-### PM-NFR-013 — Secure Deletion State
+Kaydetme başarısız olursa kullanıcı bilgilendirilmelidir.
 
-Soft-deleted project records shall not be returned by standard user-facing project queries.
+### PM-NFR-004 — Lokal Öncelikli Deneyim
 
----
+Remote servislerin yavaş veya erişilemez olması, lokal olarak kaydedilmiş projenin kullanılmasını engellememelidir.
 
-## 6.5 Privacy
+### PM-NFR-005 — Kullanıcı İzolasyonu
 
-### PM-NFR-014 — Analytics Data Minimization
+Bir kullanıcının proje verisi başka kullanıcıya gösterilmemelidir.
 
-Analytics shall not include:
+### PM-NFR-006 — Private Media
 
-- Project names
-- Project notes
-- User-entered descriptions
-- Raw image paths
-- Private pattern text
-- Yarn notes
+Proje görselleri private storage üzerinde saklanmalı ve yetkisiz erişime kapalı olmalıdır.
 
-### PM-NFR-015 — User Data Export
+### PM-NFR-007 — Analytics Gizliliği
 
-Project data shall be included in account-level data export where required.
+Analytics eventleri şu verileri içermemelidir:
 
-### PM-NFR-016 — Account Deletion
+- Proje adı
+- Proje açıklaması
+- Proje notu
+- Pattern metni
+- Görsel yolu
+- Kullanıcıya ait özel içerik
 
-Project records shall participate in the user account-deletion process.
+### PM-NFR-008 — Erişilebilirlik
 
----
+Proje ekranları screen reader desteği sunmalıdır.
 
-## 6.6 Accessibility
+Status bilgisi yalnızca renk ile anlatılmamalıdır.
 
-### PM-NFR-017 — Screen-Reader Support
+### PM-NFR-009 — Lokalizasyon
 
-Project cards, forms, status controls, and actions shall expose meaningful screen-reader labels.
+Tüm kullanıcı arayüzü metinleri lokalize edilebilir olmalıdır.
 
-### PM-NFR-018 — Status Accessibility
+Tarih formatları kullanıcı lokasyonuna göre gösterilmelidir.
 
-Project status shall not be represented by color alone.
+### PM-NFR-010 — Türkçe Karakter Desteği
 
-Status shall include text or another accessible indicator.
+Arama, sıralama ve metin gösterimi Türkçe karakterleri doğru desteklemelidir.
 
-### PM-NFR-019 — Touch Targets
-
-Interactive controls shall comply with supported-platform minimum touch-target guidance.
-
-### PM-NFR-020 — Dynamic Text
-
-Project screens shall support dynamic text without:
-
-- Hiding critical actions
-- Overlapping controls
-- Truncating required information
-- Preventing form completion
-
----
-
-## 6.7 Localization
-
-### PM-NFR-021 — Localizable Text
-
-All user-facing Project Management text shall be localizable.
-
-Hard-coded user-interface text shall not be used.
-
-### PM-NFR-022 — Date Localization
-
-Project dates shall be formatted according to the user’s locale.
-
-Stored date values shall use a consistent system representation.
-
-### PM-NFR-023 — Turkish Character Support
-
-Search, sorting, validation, and text display shall correctly support Turkish characters.
-
-Examples:
+Örnekler:
 
 ```text
 ç, ğ, ı, İ, ö, ş, ü
 ```
 
----
+### PM-NFR-011 — Migration Desteği
 
-## 6.8 Maintainability
+Proje veri modeli değişikliklerinde migration stratejisi bulunmalıdır.
 
-### PM-NFR-024 — Stable Core Model
+Mevcut kullanıcı projeleri uygulama güncellemesi sonrası erişilemez hale gelmemelidir.
 
-The core project entity shall remain independent of optional feature implementation details.
+### PM-NFR-012 — Test Edilebilirlik
 
-The project entity shall not require all counter, yarn, pattern, and part data to be embedded directly.
-
-### PM-NFR-025 — Migration Support
-
-Project data-model changes shall include a migration strategy.
-
-Existing local projects shall not become inaccessible after application updates.
-
-### PM-NFR-026 — Testability
-
-Business logic shall be structured so it can be unit tested independently from the user interface.
+İş kuralları UI katmanından bağımsız test edilebilir olmalıdır.
 
 ---
 
-# 7. Business Rules
+## 7. İş Kuralları
 
-### PM-BR-001 — Project Ownership
+### PM-BR-001 — Proje Sahipliği
 
-Every project must belong to exactly one user.
+Her proje tam olarak bir kullanıcıya ait olmalıdır.
 
-V1 does not support shared ownership.
+V1 ortak sahiplik desteklemez.
 
-### PM-BR-002 — Required Project Name
+### PM-BR-002 — Proje Adı Zorunluluğu
 
-A project must have a non-empty project name before it can become:
+`active`, `paused` ve `completed` durumundaki projelerde proje adı boş olamaz.
 
-- Active
-- Paused
-- Completed
+Draft proje kurtarma amacıyla geçici placeholder kullanabilir.
 
-A draft may temporarily use a system-generated placeholder only for recovery purposes.
+### PM-BR-003 — Status Değerleri
 
-### PM-BR-003 — Project Status Values
-
-Project status must be one of:
+Geçerli status değerleri:
 
 ```text
 draft
@@ -1510,540 +825,202 @@ completed
 archived
 ```
 
-### PM-BR-004 — Deleted-State Separation
+### PM-BR-004 — Silme Ayrı Bir Durumdur
 
-Deletion must not be represented only by setting the project status to `archived`.
+Silme işlemi `status = archived` ile temsil edilmemelidir.
 
-Archived and deleted are separate concepts.
+Silme için `deletedAt` kullanılmalıdır.
 
-### PM-BR-005 — Default Project Status
+### PM-BR-005 — Varsayılan Status
 
-The default status for quick project creation shall be:
+Hızlı proje oluşturma için varsayılan status:
 
 ```text
 active
 ```
 
-When draft creation is explicitly selected, the status shall be:
+Draft olarak kaydetme seçilirse status:
 
 ```text
 draft
 ```
 
-### PM-BR-006 — Active-Project Definition
+### PM-BR-006 — Active Project Tanımı
 
-For entitlement purposes, a project is considered active when its status is:
+Entitlement hesaplamasında aktif proje sayımı için şu status değerleri sayılır:
 
 ```text
 active
 paused
 ```
 
-### PM-BR-007 — Completed-Project Limit
+### PM-BR-007 — Completed Limit Dışı
 
-Completed projects shall not count toward the free active-project limit.
+`completed` projeler aktif proje limitine dahil edilmez.
 
-### PM-BR-008 — Archived-Project Limit
+### PM-BR-008 — Archived Limit Dışı
 
-Archived projects shall not count toward the free active-project limit.
+`archived` projeler aktif proje limitine dahil edilmez.
 
-### PM-BR-009 — Draft Limit
+### PM-BR-009 — Draft Limit Dışı
 
-Recommended V1 rule:
-
-Draft projects shall not count toward the active-project limit.
-
-The application may enforce a separate anti-abuse draft limit if necessary.
+V1 önerisi: `draft` projeler aktif proje limitine dahil edilmez.
 
 ### PM-BR-010 — Completion Date
 
-When a project becomes completed and no completion date is supplied, the system shall use the current user-local date.
+Proje tamamlandığında kullanıcı tarih seçmemişse sistem geçerli lokal tarihi `completedAt` olarak atamalıdır.
 
-### PM-BR-011 — Reopen Completion Date
+### PM-BR-011 — Reopen Davranışı
 
-When a completed project is reopened:
+Tamamlanmış proje yeniden açıldığında aktif `completedAt` değeri temizlenebilir.
 
-- The active completion date shall be cleared
-- Historical completion information may remain in audit history
+Geçmiş bilgi audit history içinde saklanabilir.
 
 ### PM-BR-012 — Archive Timestamp
 
-When a project becomes archived, `archivedAt` shall be populated.
+Proje arşivlendiğinde `archivedAt` doldurulmalıdır.
 
-When the project is restored, the active `archivedAt` value shall be cleared.
+Proje arşivden çıkarıldığında aktif `archivedAt` temizlenmelidir.
 
-### PM-BR-013 — Soft-Delete Timestamp
+### PM-BR-013 — Soft Delete Timestamp
 
-When a project is soft deleted, `deletedAt` shall be populated.
+Proje silindiğinde `deletedAt` doldurulmalıdır.
 
-Restoring the project shall clear `deletedAt`, subject to recovery rules.
+Kurtarma işleminde `deletedAt` temizlenmelidir.
 
-### PM-BR-014 — Pattern Optionality
+### PM-BR-014 — Pattern Opsiyoneldir
 
-A project does not require a linked pattern.
+Bir proje pattern olmadan geçerli olabilir.
 
-### PM-BR-015 — Yarn Optionality
+### PM-BR-015 — Yarn Opsiyoneldir
 
-A project does not require a linked yarn record.
+Bir proje yarn ilişkisi olmadan geçerli olabilir.
 
-### PM-BR-016 — Tool Optionality
+### PM-BR-016 — Tool Opsiyoneldir
 
-A project does not require a linked hook or needle record.
+Bir proje hook veya needle ilişkisi olmadan geçerli olabilir.
 
-### PM-BR-017 — Counter Optionality
+### PM-BR-017 — Counter Opsiyoneldir
 
-A project does not require a row counter.
+Bir proje row counter olmadan geçerli olabilir.
 
-### PM-BR-018 — Parts Optionality
+### PM-BR-018 — Part Opsiyoneldir
 
-A project does not require multi-part tracking.
+Bir proje multi-part tracking olmadan geçerli olabilir.
 
 ### PM-BR-019 — Pattern Cardinality
 
-Recommended V1 rule:
+V1 önerisi: Bir projenin bir primary pattern ilişkisi olmalıdır.
 
-A project may have only one primary pattern relationship.
+Birden fazla primary pattern V1 sonrası değerlendirilebilir.
 
-Support for multiple primary patterns may be evaluated in a later release.
+### PM-BR-020 — Arşivleme Veri Korur
 
-### PM-BR-020 — Multiple Yarn Records
+Arşivleme şu verileri silmemelidir:
 
-A project may have multiple yarn relationships.
-
-### PM-BR-021 — Multiple Tool Records
-
-A project may have multiple hook or needle relationships.
-
-### PM-BR-022 — Multiple Counters
-
-A project may have multiple row counters.
-
-### PM-BR-023 — Archive Preservation
-
-Archiving a project must preserve:
-
-- Core project data
-- Notes
-- Counters
+- Proje bilgileri
+- Notlar
+- Counter
 - Parts
-- Pattern relationship
-- Materials
-- Tools
-- Progress
-- Media
+- Pattern ilişkisi
+- Yarn ilişkisi
+- Tool ilişkisi
+- Görseller
+- İlerleme
 
-### PM-BR-024 — Delete Relationship Behavior
+### PM-BR-021 — İlişki Silme Davranışı
 
-Soft deleting a project shall make its project-specific relationships unavailable to normal user flows.
+Projeden pattern, yarn veya tool ilişkisi kaldırıldığında bağlı ana kayıt silinmemelidir.
 
-Permanent relationship deletion may occur only during permanent project deletion.
+### PM-BR-022 — Completed Project Editing
 
-### PM-BR-025 — Completed-Project Editing
+V1'de tamamlanmış projeler düzenlenebilir kalmalıdır.
 
-Completed projects shall remain editable in V1.
+Arayüz, projenin tamamlanmış olduğunu net göstermelidir.
 
-The interface shall clearly indicate that the project is completed.
+### PM-BR-023 — Limit Üstünde Restore
 
-### PM-BR-026 — Project Restore and Limit
+Free kullanıcı aktif proje limitindeyse archived veya completed projeyi `active` olarak geri alamaz.
 
-An archived or completed project cannot be restored to active status when the active-project limit is exceeded unless:
+Önce başka bir projeyi arşivlemeli/tamamlamalı veya Premium'a geçmelidir.
 
-- The user has Premium entitlement, or
-- Another active project is completed or archived
+### PM-BR-024 — Offline Owner
 
-### PM-BR-027 — Offline Ownership
+Offline oluşturulan projeler de doğru `ownerId` ile kaydedilmelidir.
 
-Projects created offline must receive an owner reference derived from the authenticated or locally authorized user session.
+### PM-BR-025 — Remote Sync Data Loss Yapamaz
 
-### PM-BR-028 — Local Save Precedence
-
-The application shall treat successful local persistence as the first save milestone.
-
-Remote synchronization state shall be tracked separately.
-
-### PM-BR-029 — No Automatic Relationship Deletion
-
-Changing or removing a project pattern shall not automatically delete:
-
-- Row counters
-- Project parts
-- Notes
-- Yarn relationships
-- Tool relationships
-
-### PM-BR-030 — No Automatic Inventory Deletion
-
-Removing yarn or tool relationships from a project shall not delete the corresponding inventory records.
+Remote sync başarısızlığı lokal geçerli veriyi silmemelidir.
 
 ---
 
-# 8. Validation Rules
+## 8. Validasyon Kuralları
 
-### PM-VR-001 — Project Name Required
+### PM-VR-001 — Proje Adı
 
-After trimming whitespace, a non-draft project name shall not be empty.
+Trim sonrası proje adı boş olamaz.
 
-### PM-VR-002 — Project Name Length
-
-Recommended project-name limits:
+Geçerli limit önerisi:
 
 ```text
-Minimum: 1 character
-Maximum: 120 characters
+Minimum: 1 karakter
+Maximum: 120 karakter
 ```
 
-The final limits must be identical across:
+### PM-VR-002 — Açıklama
 
-- Mobile form
-- Local database
-- Remote database
-- API validation
-
-### PM-VR-003 — Project Description Length
-
-Recommended project-description limit:
+Proje açıklaması için önerilen maksimum uzunluk:
 
 ```text
-Maximum: 2,000 characters
+2000 karakter
 ```
 
-### PM-VR-004 — Project Notes Length
+### PM-VR-003 — Notlar
 
-Recommended project-note limit:
+Proje notları için önerilen maksimum uzunluk:
 
 ```text
-Maximum: 10,000 characters
+10000 karakter
 ```
 
-Support for richer or longer notes may be introduced in a later release.
+### PM-VR-004 — Tarih Tutarlılığı
 
-### PM-VR-005 — Trim Text
+`targetCompletionDate`, `startDate` değerinden önce olamaz.
 
-The system shall trim unnecessary leading and trailing whitespace from:
+`completedAt`, `startDate` değerinden önce olamaz.
 
-- Project name
-- Custom technique value
-- Custom category value
+### PM-VR-005 — Manuel Progress
 
-Project notes may preserve intentional formatting.
-
-### PM-VR-006 — Start Date
-
-Start date may be:
-
-- In the past
-- The current date
-- In the future for planned projects
-
-### PM-VR-007 — Target Date
-
-Target completion date shall not be earlier than the project start date when both dates are present.
-
-### PM-VR-008 — Completion Date
-
-Completion date shall not be earlier than the project start date when both dates are present.
-
-### PM-VR-009 — Manual Progress
-
-Manual progress must be between:
+Manual progress değeri 0 ile 100 arasında olmalıdır.
 
 ```text
-0 and 100
+0 <= manualProgress <= 100
 ```
 
-### PM-VR-010 — Counter Progress
+### PM-VR-006 — Counter Target
 
-A counter-based progress target must be greater than zero.
+Counter progress hesaplanacaksa hedef değer 0'dan büyük olmalıdır.
 
-### PM-VR-011 — Part Quantity
+### PM-VR-007 — Part Quantity
 
-Required part quantity must be a positive integer.
+Part sayısı pozitif integer olmalıdır.
 
-Completed part quantity must not be negative.
+Tamamlanan part sayısı negatif olamaz.
 
-### PM-VR-012 — Image Type
+### PM-VR-008 — Image Type
 
-Only supported image formats shall be accepted.
-
-Recommended formats:
+Desteklenen görsel formatları:
 
 - JPEG
 - PNG
-- HEIC when platform conversion is supported
-- WebP when platform compatibility is confirmed
+- HEIC, platform destekliyorsa
+- WebP, platform destekliyorsa
 
-### PM-VR-013 — Image Size
+### PM-VR-009 — Relationship Ownership
 
-Images exceeding the configured source-size limit shall be rejected or compressed.
+Proje sadece aynı kullanıcıya ait veya kullanıcının erişebildiği kayıtlarla ilişkilendirilebilir.
 
-The exact threshold shall be defined in `implementation-notes.md`.
-
-### PM-VR-014 — Relationship Ownership
-
-A project may only link to records accessible by the same user.
-
-This rule applies to:
-
-- Pattern
-- Yarn
-- Hook
-- Needle
-- Counter
-- Part
-
-### PM-VR-015 — Archived-Project Editing
-
-When archived-project editing is disabled by the interface, the project must first be restored.
-
-Direct attempts to bypass this rule shall be rejected by domain validation.
-
----
-
-# 9. Error-Handling Requirements
-
-### PM-ER-001 — Project Save Failure
-
-When project creation or editing fails, the system shall:
-
-- Preserve user-entered values where possible
-- Display an understandable error
-- Offer retry when appropriate
-- Avoid creating duplicate projects
-
-### PM-ER-002 — Local Storage Failure
-
-When local persistence fails, the system shall not indicate that the project was saved successfully.
-
-The user shall be informed that the project could not be stored.
-
-### PM-ER-003 — Remote Sync Failure
-
-When remote synchronization fails:
-
-- The local project shall remain usable
-- The project shall be marked as pending or failed synchronization
-- Retry shall be available automatically or manually
-
-### PM-ER-004 — Cover-Image Upload Failure
-
-When cover-image upload fails:
-
-- The core project shall remain saved
-- The local image may remain pending upload
-- The user shall receive a non-destructive warning
-
-### PM-ER-005 — Missing Project
-
-When a requested project cannot be found, the system shall display a safe not-found state.
-
-The interface shall not expose technical implementation details.
-
-### PM-ER-006 — Unauthorized Project
-
-When the current user cannot access a project:
-
-- Project data shall not be shown
-- The system shall display a generic access or not-found state
-- Sensitive ownership information shall not be revealed
-
-### PM-ER-007 — Broken Pattern Relationship
-
-When a linked pattern is unavailable, the system shall allow the project to open and display a missing-pattern state.
-
-### PM-ER-008 — Broken Inventory Relationship
-
-When linked material or tool data is unavailable, the system shall not crash.
-
-The user may remove or replace the unavailable relationship.
-
-### PM-ER-009 — Entitlement Check Failure
-
-When entitlement verification fails temporarily, the system shall use the safest non-destructive behavior.
-
-Existing projects shall not become inaccessible solely because of a temporary entitlement-service failure.
-
-### PM-ER-010 — Duplicate Submission
-
-Repeated activation of the create action shall not create unintended duplicate projects.
-
----
-
-# 10. Edge Cases
-
-### PM-EC-001 — Whitespace-Only Project Name
-
-Input:
-
-```text
-"     "
-```
-
-Expected behavior:
-
-- Input is trimmed
-- Validation fails
-- A non-draft project is not created
-
-### PM-EC-002 — Duplicate Project Names
-
-The user creates two projects with the same name.
-
-Expected behavior:
-
-- Both projects are allowed
-- Each project receives a unique project ID
-- A duplicate-name warning is optional
-
-### PM-EC-003 — Very Long Project Name
-
-The user enters a project name longer than the supported maximum.
-
-Expected behavior:
-
-- Input is prevented or validation is displayed
-- The name is not silently truncated during persistence
-
-### PM-EC-004 — Application Closes During Creation
-
-The application closes after the user enters project data but before final confirmation.
-
-Expected behavior:
-
-- A recoverable draft is preserved where possible
-- No malformed project record is exposed
-
-### PM-EC-005 — Application Closes During Save
-
-The application terminates during local persistence.
-
-Expected behavior:
-
-- The local database remains consistent
-- Partial mandatory records are not exposed
-- The user can retry or recover
-
-### PM-EC-006 — Project Deleted on Another Device
-
-A project exists locally but was deleted remotely.
-
-Expected behavior:
-
-- The synchronization-conflict strategy is applied
-- Local unsynchronized changes are not silently discarded
-- The user may be informed that the remote project was deleted
-
-### PM-EC-007 — Project Edited on Two Devices
-
-The same project is edited on two devices while offline.
-
-Expected behavior:
-
-- A conflict is detected during synchronization
-- One version is not silently overwritten without applying conflict rules
-
-### PM-EC-008 — Active Limit Reached While Offline
-
-The user creates projects offline while entitlement and remote project count are unavailable.
-
-Expected behavior:
-
-- Cached entitlement rules are applied
-- The system avoids deleting data
-- Project-limit reconciliation occurs during synchronization
-
-### PM-EC-009 — Subscription Expires with Extra Projects
-
-A Premium user has ten active projects and returns to the free plan.
-
-Expected behavior:
-
-- All ten projects remain visible
-- All ten projects remain accessible
-- New project creation or activation is restricted
-- The user is informed how to return below the free limit
-
-### PM-EC-010 — Archived Project Restored Above Limit
-
-The user attempts to restore an archived project as active while the free limit is full.
-
-Expected behavior:
-
-- Restoration to active is blocked
-- The user may archive or complete another active project
-- A Premium upgrade may be offered
-- Archived project data remains safe
-
-### PM-EC-011 — Completed Project Reopened Above Limit
-
-The user attempts to reopen a completed project while the active-project limit is full.
-
-Expected behavior:
-
-- Reopening to active is blocked
-- Existing project data remains unchanged
-
-### PM-EC-012 — Missing Cover-Image File
-
-The project references a local image file that no longer exists.
-
-Expected behavior:
-
-- A placeholder is displayed
-- The project remains usable
-- The user may select a replacement image
-
-### PM-EC-013 — Image Upload Completes After Project Deletion
-
-The project is deleted while its cover image is uploading.
-
-Expected behavior:
-
-- The uploaded orphan file is removed or scheduled for cleanup
-- The deleted project is not automatically restored
-
-### PM-EC-014 — Linked Pattern Deleted
-
-The linked custom pattern is deleted.
-
-Expected behavior:
-
-- The project remains available
-- The pattern section displays an unavailable state
-- The user can remove or replace the relationship
-
-### PM-EC-015 — Linked Yarn Deleted
-
-A linked yarn-inventory record is deleted.
-
-Expected behavior:
-
-- The project remains available
-- Missing yarn is represented safely
-- Historical relationship data may be retained where required
-
-### PM-EC-016 — Progress Exceeds 100 Percent
-
-A counter or part count implies more than 100 percent completion.
-
-Expected behavior:
-
-- Displayed percentage is safely capped or marked as inconsistent
-- Raw values are preserved for correction
-- Invalid data is not silently rewritten without an approved rule
-
-### PM-EC-017 — Progress Target Is Zero
-
-A target counter has a target value of zero.
-
-Expected behavior:
-
-- Percentage is not calculated
-- Progress is treated as unavailable
-- A validation warning is displayed
-
-### PM-EC-018 — No Related Data
-
-The project has no:
+Bu kural şunlar için geçerlidir:
 
 - Pattern
 - Yarn
@@ -2051,411 +1028,365 @@ The project has no:
 - Counter
 - Part
 
-Expected behavior:
+### PM-VR-010 — Status Değeri
 
-- The project remains valid
-- Empty module states are displayed
-- The detail screen remains usable
-
-### PM-EC-019 — Archived Project Opened from Old Notification
-
-The user opens a notification pointing to an archived project.
-
-Expected behavior:
-
-- The archived project detail may open
-- Archived state is clearly displayed
-- Invalid working actions are disabled or require project restoration
-
-### PM-EC-020 — Deleted Project Opened from Deep Link
-
-The user opens a stale deep link pointing to a deleted project.
-
-Expected behavior:
-
-- Normal project content is not displayed
-- A safe not-found or recovery state is displayed
+Status alanı yalnızca izin verilen enum değerlerinden biri olabilir.
 
 ---
 
-# 11. Acceptance Criteria
+## 9. Hata Yönetimi
 
-## 11.1 Project Creation
+### PM-ER-001 — Kaydetme Hatası
 
-### PM-AC-001 — Quick Creation Success
+Proje kaydetme başarısız olursa sistem:
 
-**Given** the user is allowed to create an active project  
-**And** the active-project limit has not been reached  
-**When** the user enters a valid project name  
-**And** confirms project creation  
-**Then** the system creates exactly one project  
-**And** assigns a unique project ID  
-**And** saves the project locally  
-**And** opens the project-detail view.
+- Kullanıcı girdisini korumalı
+- Açık hata mesajı göstermeli
+- Uygunsa yeniden deneme seçeneği sunmalı
+- Duplicate proje oluşturmamalıdır
 
-### PM-AC-002 — Empty Name Rejected
+### PM-ER-002 — Lokal Storage Hatası
 
-**Given** the user is creating a non-draft project  
-**When** the project name is empty or contains only whitespace  
-**Then** the system does not create an active project  
-**And** displays a validation message.
+Lokal kayıt başarısız olursa proje kaydedildi gibi gösterilmemelidir.
 
-### PM-AC-003 — Optional Fields Do Not Block Creation
+### PM-ER-003 — Remote Sync Hatası
 
-**Given** the user has entered a valid project name  
-**When** technique, category, cover image, pattern, and material fields are empty  
-**Then** the project can still be created successfully.
+Remote sync başarısız olursa:
 
-### PM-AC-004 — Duplicate-Tap Protection
+- Lokal proje kullanılabilir kalmalı
+- Sync status `failed` veya `pending` olmalı
+- Retry mekanizması çalışmalıdır
 
-**Given** a project-create request is already processing  
-**When** the user activates the create action repeatedly  
-**Then** only one project record is created.
+### PM-ER-004 — Görsel Upload Hatası
 
-### PM-AC-005 — Offline Creation
+Kapak görseli upload edilemezse:
 
-**Given** the device has no internet connection  
-**When** the user creates a valid project  
-**Then** the project is stored locally  
-**And** appears in the project list  
-**And** is marked for later synchronization.
+- Proje kaydı korunmalı
+- Görsel pending kalabilir
+- Kullanıcı uyarılmalıdır
 
----
+### PM-ER-005 — Proje Bulunamadı
 
-## 11.2 Project List
+İstenen proje bulunamazsa safe not-found state gösterilmelidir.
 
-### PM-AC-006 — Default List
+Teknik detay kullanıcıya gösterilmemelidir.
 
-**Given** the user has active, paused, completed, and archived projects  
-**When** the project list opens  
-**Then** active and paused projects are shown by default  
-**And** completed and archived projects are excluded.
+### PM-ER-006 — Yetkisiz Erişim
 
-### PM-AC-007 — Project Card Minimum Content
+Kullanıcı yetkisiz bir projeye erişmeye çalışırsa proje verisi gösterilmemelidir.
 
-**Given** a project is shown in the project list  
-**Then** its card displays:
+### PM-ER-007 — Kırık İlişki
 
-- Project name
-- Project status
-- Cover image or placeholder
-- Last-updated information
+Pattern, yarn, tool, counter veya part ilişkisi bozuksa proje ekranı yine açılmalıdır.
 
-### PM-AC-008 — Empty State
+### PM-ER-008 — Entitlement Kontrol Hatası
 
-**Given** the user has no projects  
-**When** the project list opens  
-**Then** an empty state is displayed  
-**And** a create-project action is available.
+Entitlement kontrolü geçici olarak yapılamıyorsa sistem yıkıcı davranmamalıdır.
+
+Mevcut projeler erişilemez hale getirilmemelidir.
+
+### PM-ER-009 — Duplicate Submit
+
+Kullanıcının create butonuna birden fazla kez basması birden fazla proje oluşturmamalıdır.
 
 ---
 
-## 11.3 Project Editing
+## 10. Edge Case'ler
 
-### PM-AC-009 — Edit Success
+### PM-EC-001 — Sadece Boşluk İçeren Proje Adı
 
-**Given** the user owns the project  
-**When** the user changes a valid editable field  
-**And** saves the project  
-**Then** the updated value is stored  
-**And** `updatedAt` is refreshed.
+Input:
 
-### PM-AC-010 — Invalid Date Rejected
+```text
+"     "
+```
 
-**Given** the project has a start date  
-**When** the user enters a target completion date earlier than the start date  
-**Then** the system rejects the value  
-**And** displays a validation message.
+Beklenen:
 
-### PM-AC-011 — Remote Failure Preserves Local Change
+- Trim uygulanır
+- Validasyon hatası gösterilir
+- Active proje oluşturulmaz
 
-**Given** the local save succeeds  
-**And** remote synchronization fails  
-**Then** the local change remains available  
-**And** the project is marked for synchronization retry.
+### PM-EC-002 — Aynı İsimli Projeler
 
----
+Kullanıcı aynı isimde iki proje oluşturabilir.
 
-## 11.4 Project Status
+Beklenen:
 
-### PM-AC-012 — Pause Active Project
+- İki proje de oluşturulur
+- `projectId` değerleri farklıdır
+- Duplicate name uyarısı opsiyoneldir
 
-**Given** a project has status `active`  
-**When** the user pauses the project  
-**Then** its status becomes `paused`  
-**And** progress data remains unchanged  
-**And** no completion date is created.
+### PM-EC-003 — Çok Uzun Proje Adı
 
-### PM-AC-013 — Resume Paused Project
+Kullanıcı limitten uzun proje adı girerse:
 
-**Given** a project has status `paused`  
-**When** the user resumes the project  
-**Then** its status becomes `active`  
-**And** existing progress remains available.
+- Veri sessiz kırpılmamalıdır
+- Validasyon mesajı gösterilmelidir
 
-### PM-AC-014 — Complete Project
+### PM-EC-004 — Uygulama Oluşturma Sırasında Kapanır
 
-**Given** a project is not deleted  
-**When** the user confirms project completion  
-**Then** project status becomes `completed`  
-**And** a valid completion date is stored  
-**And** the project is removed from the default active-project list.
+Beklenen:
 
-### PM-AC-015 — Archive Project
+- Mümkünse draft korunur
+- Bozuk proje kaydı görünmez
 
-**Given** the user owns the project  
-**When** the user confirms archive  
-**Then** project status becomes `archived`  
-**And** `archivedAt` is populated  
-**And** the project no longer appears in the default list.
+### PM-EC-005 — Uygulama Kaydetme Sırasında Kapanır
 
-### PM-AC-016 — Restore Archived Project
+Beklenen:
 
-**Given** a project has status `archived`  
-**And** entitlement rules allow the destination status  
-**When** the user restores the project  
-**Then** the project is moved to the selected eligible status  
-**And** project data remains intact.
+- Lokal veri tutarlılığı korunur
+- Zorunlu alanları eksik proje aktif listede görünmez
 
----
+### PM-EC-006 — Proje Başka Cihazda Silinir
 
-## 11.5 Project Deletion
+Beklenen:
 
-### PM-AC-017 — Delete Confirmation
+- Sync conflict stratejisi uygulanır
+- Lokal değişiklikler sessizce kaybedilmez
 
-**Given** the user selects delete  
-**Then** the system clearly explains that delete differs from archive  
-**And** requires explicit confirmation.
+### PM-EC-007 — İki Cihazda Offline Edit
 
-### PM-AC-018 — Soft Delete
+Beklenen:
 
-**Given** the user confirms project deletion  
-**When** deletion succeeds  
-**Then** `deletedAt` is populated  
-**And** the project disappears from normal lists  
-**And** the project remains recoverable during the configured recovery period.
+- Conflict tespit edilir
+- Bir versiyon diğerini sessizce ezmez
 
-### PM-AC-019 — Deleted Project Access
+### PM-EC-008 — Offline Limit Aşımı
 
-**Given** a project is soft deleted  
-**When** the user attempts to open it through a stale route  
-**Then** normal project content is not displayed.
+Kullanıcı offline iken limit üstü proje oluşturursa:
 
----
+- Cached entitlement uygulanır
+- Veri silinmez
+- Online olunca reconciliation yapılır
 
-## 11.6 Search and Filtering
+### PM-EC-009 — Premium Süresi Biter
 
-### PM-AC-020 — Case-Insensitive Search
+Premium kullanıcı Free plana döner ve limitten fazla aktif projesi vardır.
 
-**Given** a project named `Mavi Kazak` exists  
-**When** the user searches for `mavi kazak`  
-**Then** the project is returned.
+Beklenen:
 
-### PM-AC-021 — Turkish Search Support
+- Mevcut projeler erişilebilir kalır
+- Yeni aktif proje kısıtlanabilir
+- Proje silinmez
 
-**Given** a project name contains Turkish characters  
-**When** the user enters a matching query  
-**Then** the project is returned correctly.
+### PM-EC-010 — Kapak Görseli Dosyası Yok
 
-### PM-AC-022 — No Search Results
+Beklenen:
 
-**Given** the search query matches no project  
-**Then** the system displays a no-results state  
-**And** provides a clear-search action.
+- Placeholder gösterilir
+- Proje kullanılabilir kalır
+- Kullanıcı yeni görsel seçebilir
 
-### PM-AC-023 — Filter Results
+### PM-EC-011 — Pattern Silinmiş
 
-**Given** projects with different statuses exist  
-**When** the user filters by `completed`  
-**Then** only completed projects are displayed.
+Beklenen:
 
-### PM-AC-024 — Clear Filters
+- Proje açılır
+- Pattern unavailable state gösterilir
+- Kullanıcı ilişkiyi kaldırabilir
 
-**Given** one or more filters are active  
-**When** the user selects clear all  
-**Then** all project filters are removed  
-**And** the default project list is restored.
+### PM-EC-012 — Progress 100'ü Aşar
+
+Beklenen:
+
+- UI güvenli davranır
+- Yüzde cap edilebilir veya uyarı gösterilebilir
+- Raw data sessizce değiştirilmez
+
+### PM-EC-013 — Deep Link Silinmiş Projeye Gider
+
+Beklenen:
+
+- Normal proje içeriği gösterilmez
+- Safe not-found veya recovery state gösterilir
 
 ---
 
-## 11.7 Relationships
+## 11. Kabul Kriterleri
 
-### PM-AC-025 — Link Pattern
+### PM-AC-001 — Hızlı Proje Oluşturma
 
-**Given** the user owns or can access both the project and pattern  
-**When** the user selects the pattern  
-**Then** the relationship is stored  
-**And** the pattern appears in the project detail.
+**Given** kullanıcı aktif proje oluşturma hakkına sahiptir  
+**When** geçerli proje adı girer ve oluştur butonuna basar  
+**Then** sistem tam olarak bir proje oluşturur  
+**And** proje lokal olarak kaydedilir  
+**And** proje detay ekranı açılır.
 
-### PM-AC-026 — Unlink Pattern
+### PM-AC-002 — Boş Ad Reddedilir
 
-**Given** a project has a linked pattern  
-**When** the user removes the relationship  
-**Then** the pattern is removed from the project  
-**And** the pattern record itself remains available.
+**Given** kullanıcı non-draft proje oluşturur  
+**When** proje adı boş veya sadece whitespace içerir  
+**Then** proje oluşturulmaz  
+**And** validasyon mesajı gösterilir.
 
-### PM-AC-027 — Link Yarn
+### PM-AC-003 — Opsiyonel Alanlar Boşken Oluşturma
 
-**Given** the user owns a yarn-inventory record  
-**When** the user links it to a project  
-**Then** the relationship is stored  
-**And** the yarn appears under project materials.
+**Given** kullanıcı geçerli proje adı girmiştir  
+**When** diğer alanları boş bırakır  
+**Then** proje başarıyla oluşturulur.
 
-### PM-AC-028 — Unlink Yarn
+### PM-AC-004 — Offline Oluşturma
 
-**Given** yarn is linked to a project  
-**When** the user removes the relationship  
-**Then** the relationship is removed  
-**And** the yarn-inventory record is preserved.
+**Given** cihaz offline durumdadır  
+**When** kullanıcı geçerli proje oluşturur  
+**Then** proje lokal kaydedilir  
+**And** proje listede görünür  
+**And** sync status pending olur.
 
-### PM-AC-029 — Create Counter from Project
+### PM-AC-005 — Varsayılan Liste
 
-**Given** the user is viewing a project  
-**When** the user creates a row counter  
-**Then** the counter is created with the correct project ID.
+**Given** kullanıcının active, paused, completed ve archived projeleri vardır  
+**When** proje listesi açılır  
+**Then** active ve paused projeler gösterilir  
+**And** completed ve archived projeler varsayılan listede görünmez.
 
-### PM-AC-030 — Create Part from Project
+### PM-AC-006 — Proje Düzenleme
 
-**Given** the user is viewing a project  
-**When** the user creates a project part  
-**Then** the part is associated with the correct project ID.
+**Given** kullanıcı projenin sahibidir  
+**When** geçerli bir alanı değiştirip kaydeder  
+**Then** değişiklik saklanır  
+**And** `updatedAt` güncellenir.
+
+### PM-AC-007 — Projeyi Duraklatma
+
+**Given** proje `active` durumdadır  
+**When** kullanıcı projeyi duraklatır  
+**Then** status `paused` olur  
+**And** proje verileri korunur.
+
+### PM-AC-008 — Projeyi Tamamlama
+
+**Given** proje silinmemiştir  
+**When** kullanıcı tamamla aksiyonunu onaylar  
+**Then** status `completed` olur  
+**And** `completedAt` doldurulur.
+
+### PM-AC-009 — Projeyi Arşivleme
+
+**Given** kullanıcı projenin sahibidir  
+**When** arşivleme işlemini onaylar  
+**Then** status `archived` olur  
+**And** `archivedAt` dolar  
+**And** proje varsayılan listeden çıkar.
+
+### PM-AC-010 — Soft Delete
+
+**Given** kullanıcı silme işlemini onaylar  
+**When** işlem başarılı olur  
+**Then** `deletedAt` dolar  
+**And** proje normal listelerde görünmez.
+
+### PM-AC-011 — Arama Türkçe Karakter Desteği
+
+**Given** proje adı Türkçe karakter içerir  
+**When** kullanıcı eşleşen arama yapar  
+**Then** proje doğru şekilde bulunur.
+
+### PM-AC-012 — Pattern Bağlama
+
+**Given** kullanıcı projeye ve pattern'e erişebilir  
+**When** pattern seçer  
+**Then** ilişki kaydedilir  
+**And** pattern proje detayında görünür.
+
+### PM-AC-013 — Yarn Bağlama
+
+**Given** kullanıcı yarn kaydına sahiptir  
+**When** yarn projeye bağlanır  
+**Then** ilişki kaydedilir  
+**And** yarn inventory kaydı silinmez.
+
+### PM-AC-014 — Row Counter Oluşturma
+
+**Given** kullanıcı proje detayındadır  
+**When** proje içinden counter oluşturur  
+**Then** counter doğru `projectId` ile kaydedilir.
+
+### PM-AC-015 — İlerleme Önceliği
+
+**Given** projede multi-part progress ve manual progress vardır  
+**When** ilerleme gösterilir  
+**Then** multi-part progress kullanılır.
+
+### PM-AC-016 — Limit Doldu
+
+**Given** Free kullanıcı aktif proje limitine ulaşmıştır  
+**When** yeni active proje oluşturmak ister  
+**Then** işlem engellenir  
+**And** mevcut projeler korunur  
+**And** upgrade veya proje arşivleme seçenekleri sunulur.
+
+### PM-AC-017 — Downgrade Veri Korur
+
+**Given** Premium kullanıcı limitten fazla aktif projeye sahiptir  
+**When** Free plana döner  
+**Then** mevcut projeler erişilebilir kalır  
+**And** hiçbir proje silinmez.
+
+### PM-AC-018 — Yetkisiz Erişim Engellenir
+
+**Given** kullanıcı başka kullanıcıya ait projeye erişmeye çalışır  
+**When** proje detayı istenir  
+**Then** proje verisi gösterilmez.
+
+### PM-AC-019 — Kırık İlişki Ekranı Bozmaz
+
+**Given** projede eksik pattern veya yarn ilişkisi vardır  
+**When** proje detayı açılır  
+**Then** ana proje bilgileri gösterilir  
+**And** eksik ilişki güvenli state ile gösterilir.
+
+### PM-AC-020 — Lokal Veri Restart Sonrası Korunur
+
+**Given** proje değişikliği lokal kaydedilmiştir  
+**When** uygulama kapanıp açılır  
+**Then** değişiklik korunur.
 
 ---
 
-## 11.8 Progress
+## 12. Requirement Traceability
 
-### PM-AC-031 — Multi-Part Progress Priority
-
-**Given** a project has valid multi-part progress  
-**And** also has a manual progress value  
-**When** progress is displayed  
-**Then** multi-part progress is used.
-
-### PM-AC-032 — Counter Progress Priority
-
-**Given** no valid multi-part progress exists  
-**And** a valid target-based counter exists  
-**When** progress is displayed  
-**Then** counter progress is used.
-
-### PM-AC-033 — Manual Progress Fallback
-
-**Given** no valid multi-part or target-based counter progress exists  
-**And** valid manual progress exists  
-**When** progress is displayed  
-**Then** manual progress is used.
-
-### PM-AC-034 — No Fabricated Progress
-
-**Given** no valid progress source exists  
-**When** the project is displayed  
-**Then** the system does not show a fabricated percentage.
-
----
-
-## 11.9 Premium Limits
-
-### PM-AC-035 — Free Limit Reached
-
-**Given** a free user has reached the active-project limit  
-**When** the user attempts to create another active project  
-**Then** active-project creation is blocked  
-**And** existing projects remain accessible  
-**And** the user is offered archive, complete, or upgrade options.
-
-### PM-AC-036 — Completed Projects Excluded from Limit
-
-**Given** a free user has completed projects  
-**When** active-project count is calculated  
-**Then** completed projects are excluded.
-
-### PM-AC-037 — Archived Projects Excluded from Limit
-
-**Given** a free user has archived projects  
-**When** active-project count is calculated  
-**Then** archived projects are excluded.
-
-### PM-AC-038 — Downgrade Preserves Projects
-
-**Given** a Premium user has more active projects than the free limit  
-**When** Premium entitlement expires  
-**Then** existing projects remain visible and accessible  
-**And** no project is deleted  
-**And** new project creation or activation may be restricted.
-
----
-
-## 11.10 Reliability and Security
-
-### PM-AC-039 — Image Failure Does Not Delete Project
-
-**Given** project creation succeeds  
-**And** cover-image upload fails  
-**Then** the project remains created  
-**And** the user is informed of the image failure.
-
-### PM-AC-040 — Missing Relationship Does Not Break Detail
-
-**Given** a project references a missing optional relationship  
-**When** the project-detail screen opens  
-**Then** core project information is displayed  
-**And** the missing relationship is represented safely.
-
-### PM-AC-041 — Unauthorized Access Blocked
-
-**Given** the current user does not own or have access to a project  
-**When** the user attempts to access it  
-**Then** project data is not displayed.
-
-### PM-AC-042 — Local Changes Survive Restart
-
-**Given** valid project changes are saved locally  
-**When** the application restarts  
-**Then** the saved changes remain available.
-
----
-
-# 12. Requirement Traceability Summary
-
-| User Need | Main Requirements |
+| Kullanıcı İhtiyacı | Gereksinimler |
 |---|---|
-| Create projects quickly | PM-FR-001 to PM-FR-007 |
-| View and discover projects | PM-FR-008 to PM-FR-015 |
-| Edit projects | PM-FR-016 to PM-FR-019 |
-| Manage project lifecycle | PM-FR-020 to PM-FR-027 |
-| Delete projects safely | PM-FR-028 to PM-FR-031 |
-| Search, filter, and sort projects | PM-FR-032 to PM-FR-040 |
-| Add notes and cover images | PM-FR-041 to PM-FR-048 |
-| Link patterns and materials | PM-FR-049 to PM-FR-059 |
-| Use counters and project parts | PM-FR-060 to PM-FR-066 |
-| Track project progress | PM-FR-067 to PM-FR-070 |
-| Work offline | PM-FR-071 to PM-FR-075 |
-| Apply Premium limits | PM-FR-076 to PM-FR-080 |
+| Proje oluşturmak | PM-FR-001 - PM-FR-006 |
+| Projeleri listelemek | PM-FR-007 - PM-FR-009 |
+| Proje detayını görmek | PM-FR-010 - PM-FR-011 |
+| Proje düzenlemek | PM-FR-012 - PM-FR-013 |
+| Proje yaşam döngüsünü yönetmek | PM-FR-014 - PM-FR-022 |
+| Arama, filtreleme, sıralama | PM-FR-023 - PM-FR-025 |
+| Not ve görsel yönetmek | PM-FR-026 - PM-FR-027 |
+| Pattern, yarn ve tool bağlamak | PM-FR-028 - PM-FR-030 |
+| Counter ve part yönetmek | PM-FR-031 - PM-FR-032 |
+| Progress görmek | PM-FR-033 |
+| Offline çalışmak | PM-FR-034 - PM-FR-036 |
+| Premium limit uygulamak | PM-FR-037 - PM-FR-039 |
+| Kırık ilişkileri güvenli yönetmek | PM-FR-040 |
 
 ---
 
-# 13. Open Product Decisions
+## 13. Açık Ürün Kararları
 
-| ID | Decision | Recommendation | Status |
+| ID | Karar | Öneri | Durum |
 |---|---|---|---|
-| PM-OD-001 | Free active-project limit | 3 projects | Open |
-| PM-OD-002 | Do drafts count toward the free limit? | No | Open |
-| PM-OD-003 | Soft-delete recovery duration | 30 days | Open |
-| PM-OD-004 | Can archived projects be edited directly? | Restore first | Open |
-| PM-OD-005 | Can one project have multiple primary patterns? | No in V1 | Open |
-| PM-OD-006 | Is manual progress included in V1? | Yes | Open |
-| PM-OD-007 | Is a project cover image included in V1? | Yes, optional | Open |
-| PM-OD-008 | Are progress photos included in V1? | Defer to V1.x | Open |
-| PM-OD-009 | Maximum project-note length | 10,000 characters | Open |
-| PM-OD-010 | Is project recovery visible to users? | Yes | Open |
+| PM-OD-001 | Free aktif proje limiti | 3 | Open |
+| PM-OD-002 | Draft projeler limite dahil mi? | Hayır | Open |
+| PM-OD-003 | Soft delete recovery süresi | 30 gün | Open |
+| PM-OD-004 | Archived proje direkt düzenlenebilir mi? | Önce restore | Open |
+| PM-OD-005 | Bir projede birden fazla primary pattern olur mu? | V1'de hayır | Open |
+| PM-OD-006 | Manual progress V1'e dahil mi? | Evet | Open |
+| PM-OD-007 | Kapak görseli V1'e dahil mi? | Evet, opsiyonel | Open |
+| PM-OD-008 | Progress photo V1'e dahil mi? | V1.x'e ertelenebilir | Open |
+| PM-OD-009 | Maksimum proje notu uzunluğu | 10000 karakter | Open |
+| PM-OD-010 | Recovery ekranı kullanıcıya görünür mü? | Evet | Open |
 
 ---
 
-# 14. Dependencies
+## 14. Bağımlılıklar
 
-## 14.1 Product Dependencies
+### 14.1 Ürün Bağımlılıkları
 
-Project Management depends on or integrates with:
+Project Management aşağıdaki feature'larla ilişkilidir:
 
 - `feature-002-row-counter`
 - `feature-003-multi-part-tracking`
@@ -2471,30 +1402,32 @@ Project Management depends on or integrates with:
 - `feature-019-notifications`
 - `feature-020-statistics`
 
-## 14.2 Technical Dependencies
+### 14.2 Teknik Bağımlılıklar
 
-Required technical capabilities include:
+Gerekli teknik yetenekler:
 
-- Authentication and user identity
-- Local database or persistence layer
-- User-scoped data access
-- Private image storage
-- Navigation and deep-link handling
+- Authentication
+- Local database
+- User-scoped access control
+- Private media storage
+- Deep link handling
 - Analytics infrastructure
-- Feature-entitlement service
+- Entitlement service
 - Error reporting
 - Localization
-- Data migration infrastructure
+- Migration infrastructure
+- Offline sync queue
 
-## 14.3 Design Dependencies
+### 14.3 Tasarım Bağımlılıkları
 
-Required design components include:
+Gerekli UI bileşenleri:
 
 - Project card
 - Project list
-- Project-detail screen
-- Quick-create form
-- Detailed create and edit form
+- Project detail
+- Quick create form
+- Detailed create form
+- Edit form
 - Status selector
 - Empty state
 - No-results state
@@ -2502,60 +1435,57 @@ Required design components include:
 - Archive confirmation
 - Delete confirmation
 - Recovery screen
-- Active-project-limit screen
-- Premium-upgrade entry point
-- Sync-status indicator
+- Limit reached screen
+- Sync status indicator
 
 ---
 
-# 15. Definition of Ready
+## 15. Definition of Ready
 
-Project Management requirements are ready for implementation when:
+Project Management geliştirmeye hazır sayılırsa:
 
-- All Must requirements are approved
-- Blocking open product decisions are resolved
-- Project-status transitions are approved
-- Active-project entitlement rules are approved
-- Deletion and recovery rules are approved
-- Project-to-pattern cardinality is approved
-- The project data model supports all required relationships
-- User stories and flows are documented in `flows.md`
-- Security and privacy requirements are documented in `security.md`
-- Analytics events are documented in `analytics.md`
-- Test coverage is documented in `testing.md`
-- Technical design is documented in `implementation-notes.md`
-- Required UX screens and states are defined
-- Product Owner approves the V1 scope
+- Tüm Must gereksinimler onaylanmış olmalı
+- Aktif proje limiti kararı verilmiş olmalı
+- Status geçişleri onaylanmış olmalı
+- Soft delete ve recovery davranışı netleşmiş olmalı
+- Pattern cardinality kararı verilmiş olmalı
+- Data model `data-model.md` içinde tanımlanmış olmalı
+- User flow'lar `flows.md` içinde hazırlanmış olmalı
+- Analytics eventleri `analytics.md` içinde tanımlanmış olmalı
+- Security gereksinimleri `security.md` içinde netleşmiş olmalı
+- Teknik yaklaşım `implementation-notes.md` içinde yazılmış olmalı
+- Test kapsamı `testing.md` içinde hazırlanmış olmalı
+- Product Owner V1 kapsamını onaylamış olmalı
 
 ---
 
-# 16. Definition of Done
+## 16. Definition of Done
 
-Project Management is complete when:
+Project Management tamamlanmış sayılırsa:
 
-- All Must functional requirements are implemented
-- All Must acceptance criteria pass
-- Required business rules are enforced
-- Validation rules are implemented consistently
-- Local persistence works
-- Offline creation works
-- Offline editing works
-- Project ownership and access control are verified
-- Premium limits work without data loss
-- Project lifecycle transitions are tested
-- Soft deletion is implemented
-- Recovery behavior is implemented or explicitly deferred
-- Missing optional relationships do not break project access
-- Accessibility checks pass
-- Localization checks pass
-- Analytics validation passes
-- Data migration tests pass
-- No release-blocking defects remain
-- Product Owner accepts the feature
+- Tüm Must fonksiyonel gereksinimler uygulanmış olmalı
+- Tüm Must acceptance criteria geçmeli
+- İş kuralları enforce edilmeli
+- Validasyonlar frontend ve backend tarafında tutarlı olmalı
+- Lokal persistence çalışmalı
+- Offline create çalışmalı
+- Offline edit çalışmalı
+- Sync status doğru yönetilmeli
+- Project ownership güvenliği test edilmeli
+- Premium limit data loss yaratmadan çalışmalı
+- Soft delete çalışmalı
+- Recovery davranışı uygulanmalı veya bilinçli şekilde ertelenmiş olmalı
+- Kırık optional ilişkiler ekranı bozmamalı
+- Accessibility kontrolleri geçmeli
+- Localization kontrolleri geçmeli
+- Analytics PII içermemeli
+- Migration testleri geçmeli
+- Kritik veya release-blocker hata kalmamalı
+- Product Owner kabul vermeli
 
 ---
 
-# 17. References
+## 17. Referanslar
 
 - `overview.md`
 - `flows.md`
@@ -2571,16 +1501,18 @@ Project Management is complete when:
 - `../../02-prd/feature-priorities.md`
 - `../../02-prd/premium-strategy.md`
 - `../../02-prd/release-plan.md`
-- `../feature-002-row-counter/`
-- `../feature-003-multi-part-tracking/`
-- `../feature-004-pattern-library/`
-- `../feature-005-custom-patterns/`
-- `../feature-006-starter-patterns/`
-- `../feature-007-yarn-inventory/`
-- `../feature-008-hook-needle-inventory/`
-- `../feature-014-premium/`
-- `../feature-015-onboarding-authentication/`
-- `../feature-017-local-persistence/`
-- `../feature-018-cloud-sync/`
-- `../feature-019-notifications/`
-- `../feature-020-statistics/`
+
+---
+
+## 18. Notlar
+
+Bu belge V1 için uygulanabilir, genişletilebilir ve Codex tarafından geliştirilebilir bir gereksinim dokümanı olacak şekilde hazırlanmıştır.
+
+Sonraki doküman sırası:
+
+1. `flows.md`
+2. `data-model.md`
+3. `analytics.md`
+4. `security.md`
+5. `implementation-notes.md`
+6. `testing.md`
